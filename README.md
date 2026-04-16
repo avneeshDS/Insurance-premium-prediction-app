@@ -24,29 +24,6 @@ Data Handling: pandas, NumPy
 Model Persistence: pickle
 API Client: requests
 
-🏗️ System Architecture
-┌──────────────┐
-│  Streamlit   │  ← User Interface
-│   Frontend   │
-└──────┬───────┘
-       │ POST /predict
-       ▼
-┌──────────────┐
-│   FastAPI    │  ← Model Inference API
-│   Backend    │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│      ML      │  ← Trained ML Model
-│   Classifier │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│ PostgreSQL   │  ← Data Storage
-└──────────────┘
-
 
 📂 Project Structure
 insurance-premium-prediction-app/
