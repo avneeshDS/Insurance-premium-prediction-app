@@ -24,27 +24,6 @@ Data Handling: pandas, NumPy
 Model Persistence: pickle
 API Client: requests
 
-
-📂 Project Structure
-insurance-premium-prediction-app/
-│
-├── data/
-│   └── insurance.csv
-│
-├── model/
-│   └── model.pkl
-│
-├── backend/
-│   └── insurance_api.py
-│
-├── frontend/
-│   └── stream_lit.py
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
-
-
 ▶️ Running the Application
 ✅ Start FastAPI Backend
 Shelluvicorn insurance_api:app --reload``Show more lines
