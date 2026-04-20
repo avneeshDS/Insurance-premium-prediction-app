@@ -1,4 +1,4 @@
-🏥 Insurance Premium Prediction App
+🏥 Insurance Premium Prediction App:
 An end‑to‑end machine learning application that predicts insurance premiums using am ML model, with a Streamlit frontend, FastAPI backend, and PostgreSQL database.
 The project demonstrates a full ML workflow from data ingestion to model deployment and interactive inference.
 
