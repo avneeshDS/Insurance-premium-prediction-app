@@ -79,17 +79,11 @@ if st.button("Predict Premium Category"):
 
         prediction = result["predicted_category"]
 
-        st.success(
-            "Predicted Insurance Premium Category: "
-            f"**{prediction}**"
-        )
-
-
+        st.success(f"Predicted Insurance Premium Category: **{prediction}**")
 
     except requests.exceptions.ConnectionError:
         st.error(
-            "Could not connect to the FastAPI server. "
-            "Start FastAPI on port 8000 first."
+            "Could not connect to the FastAPI server. Start FastAPI on port 8000 first."
         )
 
     except requests.exceptions.Timeout:

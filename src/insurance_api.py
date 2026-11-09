@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
-from fastapi import FastAPI
 
+from fastapi import FastAPI
 
 MODEL_PATH = Path(__file__).resolve().parent / "model.pkl"
 
@@ -9,7 +9,11 @@ with MODEL_PATH.open("rb") as f:
     model = pickle.load(f)
 
 
-app = FastAPI(title="Insurance Premium Category Predictor", version="1.0.0", description="Predicts insurance premium category based on user input.")
+app = FastAPI(
+    title="Insurance Premium Category Predictor",
+    version="1.0.0",
+    description="Predicts insurance premium category based on user input.",
+)
 
 class1_cities = [
     "Mumbai",
