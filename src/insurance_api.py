@@ -1,12 +1,15 @@
 import pickle
-
+from pathlib import Path
 from fastapi import FastAPI
 
-with open("model.pkl", "rb") as f:
+
+MODEL_PATH = Path(__file__).resolve().parent / "model.pkl"
+
+with MODEL_PATH.open("rb") as f:
     model = pickle.load(f)
 
 
-app = FastAPI()
+app = FastAPI(title="Insurance Premium Category Predictor", version="1.0.0", description="Predicts insurance premium category based on user input.")
 
 class1_cities = [
     "Mumbai",
@@ -124,7 +127,7 @@ class UserInput(BaseModel):
 
     @computed_field
     @property
-    def city_tier(self) -> int:
+    def city_class(self) -> int:
         if self.city in class1_cities:
             return 1
         elif self.city in class2_cities:
@@ -145,7 +148,7 @@ def predict_premium(data: UserInput):
                 "bmi": data.bmi,
                 "age_group": data.age_group,
                 "lifestyle_risk": data.lifestyle_risk,
-                "city_tier": data.city_tier,
+                "city_class": data.city_class,
                 "income_lpa": data.income_lpa,
                 "occupation": data.occupation,
             }
