@@ -1,7 +1,7 @@
 .venv/
+.venv313/
 __pycache__/
-*.pyc
 .pytest_cache/
 .ruff_cache/
 .coverage
-*.pkl
+*.pyc
