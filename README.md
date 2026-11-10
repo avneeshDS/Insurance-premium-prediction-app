@@ -1,93 +1,218 @@
 # 🏥 Insurance Premium Category Prediction App
 
-An end-to-end machine learning application that predicts an **insurance premium category** from user-provided information.
+An end-to-end machine-learning application that predicts an **insurance premium category** from demographic, physical, lifestyle, location, income, and occupation-related information.
 
-The project covers the complete machine learning workflow, including data ingestion, exploratory data analysis, preprocessing, model training, model evaluation, API development, database integration, and interactive prediction through a web interface.
+The application includes:
 
-Two machine learning models were trained and compared:
+- A trained scikit-learn classification pipeline
+- A FastAPI prediction backend
+- A Streamlit web frontend
+- Automated CI/CD deployment through GitHub Actions
+- Separate frontend and backend deployments on Azure App Service
+- Reproducible dependency management using `uv`
 
-- Support Vector Machine
-- Random Forest Classifier
+---
 
-The prediction service is implemented with **FastAPI**, while **Streamlit** provides the interactive frontend. **PostgreSQL** is used for structured data storage, and **uv** is used for dependency and environment management.
+## 🌐 Live Azure Applications
 
-> **Important:** If the project uses `sklearn.svm.SVC`, describe the model as a **Support Vector Classifier**. If it uses `sklearn.svm.SVR`, SVR is a regression model rather than a classifier. Update the model description in this README to match the implementation.
+### Streamlit Web Application
+
+Use the interactive frontend to enter customer information and obtain an insurance premium category prediction:
+
+[Open the Streamlit application](https://streamlitapp-hsf5eug5g0b0emf9.indonesiacentral-01.azurewebsites.net/)
+
+### FastAPI Swagger Documentation
+
+Use the Swagger interface to inspect and test the prediction API:
+
+[Open the FastAPI Swagger interface](https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/docs#/default/predict_premium_predict_post)
+
+### Direct Prediction Endpoint
+
+Applications should send POST requests directly to:
+
+```text
+https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/predict
+```
+
+> **Note:** The Swagger URL is intended for browser-based API testing. The Streamlit application communicates with the direct `/predict` endpoint.
+
+> **Free-tier notice:** The applications are hosted on Azure App Service Free F1 plans. An application may require a short startup period after inactivity and may become temporarily unavailable if the free daily quota is exhausted.
 
 ---
 
 ## 🚀 Features
 
-- End-to-end machine learning workflow
 - Insurance premium category prediction
-- Support Vector Machine model
-- Random Forest Classifier model
-- Model training and performance comparison
-- Interactive Streamlit user interface
-- FastAPI REST API for model inference
+- Interactive Streamlit web interface
+- FastAPI REST prediction endpoint
+- Automatic Swagger/OpenAPI documentation
 - Pydantic request validation
-- PostgreSQL database integration
-- CSV-based dataset ingestion
-- Serialized model loading for inference
-- Automatic Swagger API documentation
-- Dependency and environment management with uv
-- Organized source package under `src/`
+- Derived-feature calculation during inference
+- Serialized scikit-learn model pipeline
+- Git and GitHub version control
+- Automated Azure deployment using GitHub Actions
+- OpenID Connect authentication between GitHub and Azure
+- Python dependency and environment management with `uv`
+- Python 3.13 development and deployment environment
+- Cross-platform model loading with `pathlib`
+- Separate frontend and backend Azure Web Apps
 
 ---
 
 ## 🎯 Problem Statement
 
-Insurance premiums can vary according to demographic, lifestyle, health, and location-related factors. The purpose of this project is to use supervised machine learning to predict the appropriate insurance premium category for a new observation.
+Insurance premium categories may depend on demographic, physical, lifestyle, occupational, income, and location-related factors.
 
-Because the target is a category rather than an exact monetary amount, the problem is treated as a **classification task**.
+This project uses supervised machine learning to predict an insurance premium category for a new customer profile.
+
+Because the output is a category rather than an exact monetary amount, the problem is formulated as a **classification task**.
+
+---
+
+## 🏗️ Application Architecture
+
+```text
+User
+  │
+  ▼
+Streamlit Web App
+  │
+  │ HTTPS POST request
+  ▼
+FastAPI /predict endpoint
+  │
+  ▼
+Pydantic input validation
+  │
+  ▼
+Feature engineering
+  ├── BMI
+  ├── Age group
+  ├── Lifestyle risk
+  └── City class
+  │
+  ▼
+Serialized scikit-learn pipeline
+  │
+  ▼
+Predicted premium category
+  │
+  ▼
+JSON response displayed in Streamlit
+```
+
+The Streamlit frontend and FastAPI backend are deployed as two separate Azure App Service Web Apps.
 
 ---
 
 ## 🔄 Project Workflow
 
-1. Load the insurance dataset from a CSV file.
-2. Explore the dataset and inspect feature distributions.
-3. Identify missing values and duplicate observations.
-4. Preprocess numerical and categorical features.
-5. Split the data into training and test sets.
-6. Train and compare two machine learning models.
-7. Evaluate the models using classification metrics.
-8. Save the selected model and preprocessing objects.
-9. Expose the selected model through a FastAPI endpoint.
-10. Send user input from Streamlit to the FastAPI backend.
-11. Display the predicted premium category in the Streamlit app.
-12. Store relevant structured data in PostgreSQL.
+1. Load the insurance dataset.
+2. Inspect the dataset for missing values and duplicate observations.
+3. Explore numerical and categorical feature distributions.
+4. Engineer relevant insurance-risk features.
+5. Prepare numerical and categorical predictors.
+6. Split the dataset into training and testing subsets.
+7. Train and compare machine-learning classifiers.
+8. Evaluate the models using classification metrics.
+9. Save the selected preprocessing and classification pipeline as `model.pkl`.
+10. Load the saved pipeline in the FastAPI application.
+11. Validate incoming requests using Pydantic.
+12. Generate the required derived features inside the API.
+13. Send prediction requests from Streamlit to FastAPI.
+14. Return and display the predicted premium category.
+15. Deploy the frontend and backend separately to Azure App Service.
+16. Automate future deployments using GitHub Actions.
 
 ---
 
-## 🧠 Machine Learning Models
+## 🧠 Machine-Learning Models
 
-### 1. Support Vector Machine
+The project explores classification algorithms for predicting insurance premium categories.
 
-A Support Vector Machine model was trained to learn the decision boundaries between the insurance premium categories.
+### Support Vector Classifier
 
-If the implementation uses classification labels, the appropriate scikit-learn estimator is:
+A Support Vector Classifier can learn nonlinear decision boundaries between premium categories.
 
 ```python
 from sklearn.svm import SVC
 ```
 
-If the implementation currently uses `SVR`, review the problem formulation because `SVR` predicts continuous numerical values rather than categorical classes.
+### Random Forest Classifier
 
-### 2. Random Forest Classifier
-
-A Random Forest Classifier was trained as an ensemble-based alternative. Random Forest combines multiple decision trees and uses their aggregated predictions to classify each observation.
+A Random Forest Classifier combines predictions from multiple decision trees and can capture nonlinear relationships and interactions between insurance-risk variables.
 
 ```python
 from sklearn.ensemble import RandomForestClassifier
 ```
 
-The final model is selected based on test-set and cross-validation performance, rather than training accuracy alone.
+The selected model is stored as part of a serialized scikit-learn pipeline:
+
+```text
+src/model.pkl
+```
+
+The pipeline should contain both preprocessing and classification steps to ensure that training and inference use the same transformations.
+
+---
+
+## 🧮 Input and Derived Features
+
+### User-provided inputs
+
+The application accepts:
+
+- Age
+- Weight in kilograms
+- Height in metres
+- Annual income in lakhs per annum
+- Smoking status
+- City
+- Occupation
+
+### Features calculated by FastAPI
+
+The API derives the following features before prediction.
+
+#### Body mass index
+
+```text
+BMI = weight / height²
+```
+
+#### Age group
+
+| Age range | Group |
+|---|---|
+| Below 28 | Young |
+| 28 to below 45 | Adult |
+| 45 to below 65 | Middle_aged |
+| 65 and above | Senior |
+
+#### Lifestyle risk
+
+| Condition | Risk category |
+|---|---|
+| Smoker and BMI above 30 | High |
+| Smoker or BMI above 25 | Medium |
+| Non-smoker and BMI of 25 or below | Low |
+
+#### City class
+
+| City grouping | Class |
+|---|---:|
+| Selected major cities | 1 |
+| Selected regional cities | 2 |
+| Other cities | 3 |
+
+These derived features must remain consistent with the feature engineering used during model training.
 
 ---
 
 ## 📊 Model Evaluation
 
-The models can be compared using the following classification metrics:
+Classification models should be evaluated using:
 
 - Accuracy
 - Precision
@@ -95,34 +220,17 @@ The models can be compared using the following classification metrics:
 - F1-score
 - Confusion matrix
 - Cross-validation score
+- Class-wise performance
 
-Add the actual results obtained from the notebook below:
-
-```text
-Support Vector Machine
-Accuracy: [add value]
-Precision: [add value]
-Recall: [add value]
-F1-score: [add value]
-Cross-validation score: [add mean ± standard deviation]
-
-Random Forest Classifier
-Accuracy: [add value]
-Precision: [add value]
-Recall: [add value]
-F1-score: [add value]
-Cross-validation score: [add mean ± standard deviation]
-
-Selected model: [add selected model]
-```
+Training accuracy alone should not be used for selecting the final model. Model selection should be based on performance on unseen data and cross-validation stability.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
 ### Programming and data analysis
 
-- Python
+- Python 3.13
 - Pandas
 - NumPy
 - Jupyter Notebook
@@ -130,29 +238,43 @@ Selected model: [add selected model]
 ### Machine learning
 
 - scikit-learn
-- Support Vector Machine
-- Random Forest Classifier
+- Support Vector Classification
+- Random Forest Classification
+- Pickle model persistence
 
-### Backend and API
+### Backend
 
 - FastAPI
-- Uvicorn
 - Pydantic
+- Uvicorn
+- Gunicorn
 
 ### Frontend
 
 - Streamlit
 - Requests
 
-### Database
+### Cloud deployment
 
-- PostgreSQL
+- Microsoft Azure App Service
+- Linux Web Apps
+- Azure App Service Free F1 plans
+- Azure Deployment Center
+- Azure managed identities
+- OpenID Connect
 
-### Development tools
+### CI/CD and version control
 
 - Git
 - GitHub
-- uv
+- GitHub Actions
+
+### Dependency management
+
+- `uv`
+- `pyproject.toml`
+- `uv.lock`
+- `requirements.txt`
 
 ---
 
@@ -160,48 +282,52 @@ Selected model: [add selected model]
 
 ```text
 Insurance-premium-prediction-app/
-|
+│
+├── .github/
+│   └── workflows/
+│       ├── main_fastapiinsurance.yml
+│       └── main_streamlitapp.yml
+│
+├── data/
+│   └── [insurance dataset]
+│
 ├── src/
-│   └── insurance_premium_prediction_app/
-│       └── [source package files]
-|
+│   ├── insurance_api.py
+│   ├── stream_lit.py
+│   └── model.pkl
+│
 ├── .gitignore
 ├── .python-version
+├── pyproject.toml
+├── requirements.txt
+├── uv.lock
 ├── README.md
 ├── Streamlit app screenshot.png
-├── fastApi screenshot.png
-├── insurance.csv
-├── insurance_api.py
-├── insurance_code.ipynb
-├── pyproject.toml
-├── stream_lit.py
-└── uv.lock
+└── fastApi screenshot.png
 ```
 
-### Main files
+### Important files
 
-- `insurance_code.ipynb`: Exploratory data analysis, preprocessing, model training, and model evaluation
-- `insurance_api.py`: FastAPI application and prediction endpoint
-- `stream_lit.py`: Streamlit frontend application
-- `insurance.csv`: Dataset used for model development
-- `pyproject.toml`: Project metadata and dependency configuration
-- `uv.lock`: Locked dependency versions for reproducible installation
-- `src/insurance_premium_prediction_app/`: Python source package
-- `Streamlit app screenshot.png`: Screenshot of the Streamlit application
-- `fastApi screenshot.png`: Screenshot of the FastAPI Swagger interface
+- `src/insurance_api.py`: FastAPI application, input validation, feature engineering, model loading, and prediction endpoint
+- `src/stream_lit.py`: Streamlit user interface and FastAPI request handling
+- `src/model.pkl`: Serialized preprocessing and classification pipeline
+- `pyproject.toml`: Project metadata and direct dependencies
+- `uv.lock`: Reproducible dependency lockfile
+- `requirements.txt`: Azure and GitHub Actions deployment dependencies
+- `.python-version`: Python version used by `uv`
+- `.github/workflows/`: GitHub Actions deployment workflows
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Local Installation
 
 ### Prerequisites
 
-Install the following software before running the application:
+Install:
 
-- Python
+- Python 3.13
 - Git
-- uv
-- PostgreSQL
+- `uv`
 
 ### 1. Clone the repository
 
@@ -210,113 +336,77 @@ git clone https://github.com/avneeshDS/Insurance-premium-prediction-app.git
 cd Insurance-premium-prediction-app
 ```
 
-### 2. Install the dependencies
-
-The repository contains `pyproject.toml` and `uv.lock`. Install the locked dependencies with:
+### 2. Install dependencies
 
 ```bash
 uv sync
 ```
 
-This command creates a virtual environment and installs the required packages.
+This creates a project virtual environment and installs the dependencies recorded in `uv.lock`.
 
-### 3. Activate the virtual environment
-
-#### Windows PowerShell
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-#### Windows Command Prompt
-
-```cmd
-.venv\Scripts\activate
-```
-
-#### Linux or macOS
+### 3. Verify the Python version
 
 ```bash
-source .venv/bin/activate
+uv run python --version
 ```
 
-You can also run project commands with `uv run` without manually activating the environment.
+Expected output:
+
+```text
+Python 3.13.x
+```
+
+### 4. Verify the main dependencies
+
+```bash
+uv run python -c "import fastapi, streamlit, sklearn, pandas, numpy; print('Dependencies OK')"
+```
 
 ---
 
-## 🗄️ PostgreSQL Configuration
+## ▶️ Running the Applications Locally
 
-Create a PostgreSQL database for the application and configure the connection values used by the project.
+FastAPI and Streamlit must run in separate terminals.
 
-A local `.env` file can be used to store the database configuration:
+### Terminal 1: Start FastAPI
 
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=insurance_db
-DB_USER=postgres
-DB_PASSWORD=your_password
-```
-
-Alternatively, use a database connection URL:
-
-```env
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/insurance_db
-```
-
-Do not commit passwords or other secrets to GitHub. Ensure that `.env` is included in `.gitignore`:
-
-```text
-.env
-```
-
-The environment-variable names must match the names used in the Python application.
-
----
-
-## ▶️ Running the Application
-
-### 1. Start the FastAPI backend
-
-Run the following command from the repository root:
+From the repository root:
 
 ```bash
-uv run uvicorn insurance_api:app --reload
+uv run uvicorn src.insurance_api:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-The API will be available at:
-
-```text
-http://127.0.0.1:8000
-```
-
-Swagger UI will be available at:
+FastAPI Swagger documentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-ReDoc will be available at:
+FastAPI ReDoc documentation:
 
 ```text
 http://127.0.0.1:8000/redoc
 ```
 
-### 2. Start the Streamlit frontend
+Local prediction endpoint:
 
-Open another terminal in the repository root and run:
-
-```bash
-uv run streamlit run stream_lit.py
+```text
+http://127.0.0.1:8000/predict
 ```
 
-The Streamlit application will normally open at:
+### Terminal 2: Start Streamlit
+
+```bash
+uv run streamlit run src/stream_lit.py --server.port 8501
+```
+
+The Streamlit application will normally be available at:
 
 ```text
 http://localhost:8501
 ```
 
-The FastAPI backend must be running before predictions are submitted from Streamlit.
+The FastAPI backend must be running before a prediction is submitted from Streamlit.
 
 ---
 
@@ -328,17 +418,23 @@ The FastAPI backend must be running before predictions are submitted from Stream
 POST /predict
 ```
 
-### Example request
+### Azure endpoint
 
-The following request is an example. Update the field names and values so that they exactly match the Pydantic schema in `insurance_api.py`.
+```text
+https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/predict
+```
+
+### Example request
 
 ```json
 {
   "age": 38,
-  "height": 1.72,
   "weight": 70,
-  "smoker": 1,
-  "city": "Prague"
+  "height": 1.72,
+  "income_lpa": 15,
+  "smoker": false,
+  "city": "Delhi",
+  "occupation": "private_job"
 }
 ```
 
@@ -346,25 +442,178 @@ The following request is an example. Update the field names and values so that t
 
 ```json
 {
-  "predicted_premium_category": "Medium"
+  "predicted_category": "Medium"
 }
 ```
 
-The actual category names depend on the target labels used during model training.
+### Supported occupation values
+
+```text
+retired
+freelancer
+student
+government_job
+business_owner
+unemployed
+private_job
+```
+
+### Example Python request
+
+```python
+import requests
+
+api_url = (
+    "https://fastapiinsurance-dkb9f7a2ehbzdxgr."
+    "uaenorth-01.azurewebsites.net/predict"
+)
+
+payload = {
+    "age": 38,
+    "weight": 70,
+    "height": 1.72,
+    "income_lpa": 15,
+    "smoker": False,
+    "city": "Delhi",
+    "occupation": "private_job",
+}
+
+response = requests.post(
+    api_url,
+    json=payload,
+    timeout=30,
+)
+
+response.raise_for_status()
+print(response.json())
+```
 
 ---
 
 ## 🔁 Prediction Flow
 
 1. A user enters information in the Streamlit interface.
-2. Streamlit converts the input into a JSON request.
-3. Streamlit sends a POST request to the FastAPI `/predict` endpoint.
+2. Streamlit converts the inputs into a JSON payload.
+3. Streamlit sends an HTTPS POST request to the FastAPI `/predict` endpoint.
 4. Pydantic validates the submitted fields and data types.
-5. FastAPI applies the preprocessing steps used during model training.
-6. The selected classifier predicts the insurance premium category.
-7. FastAPI returns the prediction as a JSON response.
-8. Streamlit displays the predicted category.
-9. Relevant structured information can be stored in PostgreSQL.
+5. FastAPI calculates BMI, age group, lifestyle risk, and city class.
+6. FastAPI creates a Pandas DataFrame using the features expected by the trained pipeline.
+7. The scikit-learn pipeline predicts the insurance premium category.
+8. FastAPI returns the result as JSON.
+9. Streamlit displays the predicted category.
+
+---
+
+## 🔗 Configuring the API URL
+
+For local execution, `src/stream_lit.py` should use:
+
+```python
+API_URL = "http://127.0.0.1:8000/predict"
+```
+
+For Azure deployment, use:
+
+```python
+API_URL = (
+    "https://fastapiinsurance-dkb9f7a2ehbzdxgr."
+    "uaenorth-01.azurewebsites.net/predict"
+)
+```
+
+Do not use the Swagger URL as the API endpoint:
+
+```text
+/docs#/default/predict_premium_predict_post
+```
+
+The Swagger fragment is only for interactive browser documentation.
+
+---
+
+## ☁️ Azure Deployment
+
+The frontend and backend are deployed as separate Linux Web Apps.
+
+### FastAPI Web App
+
+The FastAPI service is deployed at:
+
+[FastAPI Swagger documentation](https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/docs#/default/predict_premium_predict_post)
+
+#### Startup command
+
+```bash
+gunicorn -w 1 -k uvicorn.workers.UvicornWorker src.insurance_api:app --bind 0.0.0.0:8000 --timeout 600
+```
+
+### Streamlit Web App
+
+The Streamlit interface is deployed at:
+
+[Streamlit application](https://streamlitapp-hsf5eug5g0b0emf9.indonesiacentral-01.azurewebsites.net/)
+
+#### Startup command
+
+```bash
+python -m streamlit run src/stream_lit.py --server.port 8000 --server.address 0.0.0.0 --server.headless true
+```
+
+### Required Azure application setting
+
+```text
+SCM_DO_BUILD_DURING_DEPLOYMENT=true
+```
+
+This instructs Azure App Service to install dependencies from `requirements.txt` during deployment.
+
+### Runtime alignment
+
+The following environments should use the same Python version:
+
+```text
+Local uv environment: Python 3.13
+GitHub Actions:        Python 3.13
+Azure App Service:     Python 3.13
+```
+
+---
+
+## 🔁 CI/CD with GitHub Actions
+
+A push to the `main` branch triggers the configured GitHub Actions deployment workflows.
+
+The workflows perform the following steps:
+
+1. Check out the repository.
+2. Configure Python 3.13.
+3. Create a temporary virtual environment.
+4. Install packages from `requirements.txt`.
+5. Package the application.
+6. Authenticate to Azure using OpenID Connect.
+7. Deploy the package to the corresponding Azure Web App.
+
+Separate workflows deploy:
+
+- The FastAPI backend
+- The Streamlit frontend
+
+Obsolete workflows should be disabled to prevent unnecessary deployments and Free F1 quota consumption.
+
+---
+
+## 🔐 Deployment Authentication
+
+GitHub Actions authenticates to Azure through OpenID Connect rather than storing an Azure password.
+
+This setup uses:
+
+- A user-assigned managed identity
+- An Azure federated credential
+- An Azure role assignment
+- GitHub Actions OIDC tokens
+
+The identity must have sufficient access to the target Azure resource group or Web App.
 
 ---
 
@@ -372,107 +621,188 @@ The actual category names depend on the target labels used during model training
 
 ### Streamlit application
 
-![Streamlit application](Streamlit%20app%20screenshot.png)
+Streamlit%20app%20screenshot.png
 
 ### FastAPI Swagger interface
 
-![FastAPI Swagger interface](fastApi%20screenshot.png)
+fastApi%20screenshot.png
 
 ---
 
-## 📓 Model Development
+## 🧪 Testing
 
-The model-development notebook contains the following stages.
+Run code-quality checks with Ruff:
 
-### Data loading
+```bash
+uv run ruff check .
+```
 
-The insurance dataset is loaded from `insurance.csv` using Pandas.
+Format the code:
 
-### Exploratory data analysis
+```bash
+uv run ruff format .
+```
 
-The analysis includes:
+Run the test suite:
 
-- Dataset dimensions
-- Feature data types
-- Missing-value inspection
-- Duplicate-observation inspection
-- Numerical-feature distributions
-- Categorical-feature distributions
-- Relationships between the predictors and target category
+```bash
+uv run pytest
+```
 
-### Data preprocessing
+If Pytest reports:
 
-The preprocessing process may include:
+```text
+collected 0 items
+```
 
-- Missing-value handling
-- Categorical-feature encoding
-- Numerical-feature scaling
-- Feature selection
-- Training and test splitting
+the repository does not yet contain discoverable automated tests.
 
-### Model training
+Suggested future test files include:
 
-The prepared training data is used to train and compare the Support Vector Machine and Random Forest Classifier.
-
-### Model evaluation
-
-The models are evaluated on unseen data using appropriate classification metrics. Cross-validation can also be used to estimate model stability.
-
-### Model persistence
-
-The selected model and all required preprocessing components are serialized and loaded by the FastAPI application during inference.
-
-For reliable predictions, preprocessing during inference must be identical to preprocessing during training. A scikit-learn `Pipeline` is recommended for combining preprocessing and model inference.
+```text
+tests/test_api.py
+tests/test_features.py
+tests/test_model.py
+tests/test_streamlit.py
+```
 
 ---
 
-## 📝 Key Learnings
+## 📝 Skills Demonstrated
 
-This project demonstrates experience in:
+This project demonstrates practical experience in:
 
-- Framing a business problem as a machine learning classification task
-- Preparing numerical and categorical data
-- Training and comparing classification models
-- Evaluating models with suitable classification metrics
-- Avoiding preprocessing inconsistencies between training and inference
-- Serving a trained model through a REST API
-- Validating API requests with Pydantic
-- Connecting a Streamlit frontend to a FastAPI backend
-- Integrating a Python application with PostgreSQL
-- Managing dependencies and environments with uv
-- Organizing an end-to-end machine learning repository
-- Handling model serialization and dependency compatibility
+- Machine-learning classification
+- Feature engineering
+- Numerical and categorical preprocessing
+- scikit-learn pipeline development
+- Model serialization and loading
+- FastAPI REST API development
+- Pydantic request validation
+- Streamlit web application development
+- Frontend-to-backend API communication
+- HTTP POST requests and JSON responses
+- Local multi-service development
+- Python dependency management with `uv`
+- Git and GitHub version control
+- GitHub Actions CI/CD
+- Azure App Service deployment
+- OIDC-based GitHub-to-Azure authentication
+- Linux application startup configuration
+- Azure deployment-log troubleshooting
+- Python runtime and package compatibility management
+- HTTP 403, 405, 500, and 503 troubleshooting
+- Azure free-tier quota and cost management
+
+---
+
+## 🧩 Troubleshooting
+
+### Streamlit cannot connect to FastAPI
+
+Confirm that:
+
+- FastAPI is running
+- The `/predict` URL is correct
+- Streamlit is using the direct API URL
+- The request uses `requests.post()`
+- The FastAPI Web App has not exhausted its Free F1 quota
+
+### HTTP 405: Method Not Allowed
+
+A 405 response generally means Streamlit is calling the wrong path or HTTP method.
+
+Use:
+
+```python
+requests.post(
+    "https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/predict",
+    json=input_data,
+)
+```
+
+Do not send a request to `/docs` or the Swagger fragment.
+
+### HTTP 422: Unprocessable Entity
+
+The submitted JSON fields or data types do not match the Pydantic schema.
+
+Check:
+
+- Required field names
+- Numeric data types
+- Boolean smoking status
+- Supported occupation values
+
+### HTTP 500: Internal Server Error
+
+Inspect the FastAPI logs. Common causes include:
+
+- Missing model file
+- Incorrect model path
+- Missing input feature
+- Different feature names between training and inference
+- Incompatible scikit-learn version
+
+### HTTP 403: Site Disabled
+
+The Azure Web App may be stopped or the Free F1 quota may be exhausted.
+
+### HTTP 503: Service Unavailable
+
+The application process may have failed to start. Check:
+
+- Azure Log Stream
+- Startup command
+- Installed dependencies
+- Python runtime version
+- Model loading
+
+---
+
+## 💰 Azure Free-Tier Considerations
+
+The project uses separate Azure Web Apps for FastAPI and Streamlit.
+
+When using the Free F1 tier:
+
+- CPU, memory, and bandwidth quotas are limited
+- Applications may sleep during inactivity
+- Repeated deployments consume CPU quota
+- Multiple Web Apps can exhaust quota quickly if they share a plan
+- Historical cost and quota information may be delayed
+
+Disable obsolete GitHub Actions workflows and stop unused Web Apps to reduce unnecessary resource usage.
 
 ---
 
 ## 🔮 Future Improvements
 
-- Add automated unit tests
+- Add unit and integration tests
 - Add FastAPI endpoint tests
-- Add input-validation tests
-- Combine preprocessing and classification in a scikit-learn pipeline
-- Add stratified cross-validation
-- Investigate class imbalance
-- Perform hyperparameter optimization
-- Add feature-importance visualization
-- Add SHAP-based model explanations
+- Add Streamlit smoke tests
+- Add a `/health` endpoint
 - Add structured application logging
-- Add data-drift and model-performance monitoring
-- Add Docker and Docker Compose
-- Add GitHub Actions for continuous integration
+- Return model confidence and class probabilities
+- Add model version metadata
+- Add SHAP-based explanations
+- Add data-drift monitoring
+- Add model-performance monitoring
+- Add automated retraining
 - Add authentication and authorization
-- Deploy the application to a cloud platform
-- Manage secrets through environment variables
-- Add model version tracking
-- Add FastAPI health-check endpoints
+- Store deployment secrets in Azure Key Vault
+- Add Docker and Docker Compose
+- Add PostgreSQL logging if persistent prediction storage is required
+- Add staging and production deployment environments
+- Add manual approval before production deployment
 
 ---
 
 ## ⚠️ Disclaimer
 
-This repository is an educational and portfolio machine learning project.
+This repository is an educational and portfolio machine-learning project.
 
-The predicted insurance premium categories must not be used for real insurance pricing, underwriting, medical assessment, financial decisions, or eligibility determination without appropriate validation, regulatory review, security controls, and qualified domain-expert oversight.
+The predicted insurance premium categories must not be used for real insurance pricing, underwriting, eligibility assessment, medical assessment, or financial decision-making without appropriate validation, regulatory review, security controls, fairness assessment, and qualified domain-expert oversight.
 
 ---
 
@@ -481,6 +811,8 @@ The predicted insurance premium categories must not be used for real insurance p
 **Avneesh Kumar**
 
 - GitHub: [avneeshDS](https://github.com/avneeshDS)
+- Repository: [Insurance-premium-prediction-app](https://github.com/avneeshDS/Insurance-premium-prediction-app)
+- Streamlit: [Live web application](https://streamlitapp-hsf5eug5g0b0emf9.indonesiacentral-01.azurewebsites.net/)
+- FastAPI: [Swagger documentation](https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/docs#/default/predict_premium_predict_post)
 
-
-If you find this project useful, consider starring the repository.
+If this project is useful, consider starring the repository.
