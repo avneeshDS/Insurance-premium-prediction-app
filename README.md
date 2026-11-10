@@ -598,36 +598,9 @@ Separate workflows deploy:
 - The FastAPI backend
 - The Streamlit frontend
 
-Obsolete workflows should be disabled to prevent unnecessary deployments and Free F1 quota consumption.
 
 ---
 
-## 🔐 Deployment Authentication
-
-GitHub Actions authenticates to Azure through OpenID Connect rather than storing an Azure password.
-
-This setup uses:
-
-- A user-assigned managed identity
-- An Azure federated credential
-- An Azure role assignment
-- GitHub Actions OIDC tokens
-
-The identity must have sufficient access to the target Azure resource group or Web App.
-
----
-
-## 🖥️ Application Screenshots
-
-### Streamlit application
-
-Streamlit%20app%20screenshot.png
-
-### FastAPI Swagger interface
-
-fastApi%20screenshot.png
-
----
 
 ## 🧪 Testing
 
@@ -649,53 +622,6 @@ Run the test suite:
 uv run pytest
 ```
 
-If Pytest reports:
-
-```text
-collected 0 items
-```
-
-the repository does not yet contain discoverable automated tests.
-
-Suggested future test files include:
-
-```text
-tests/test_api.py
-tests/test_features.py
-tests/test_model.py
-tests/test_streamlit.py
-```
-
----
-
-## 📝 Skills Demonstrated
-
-This project demonstrates practical experience in:
-
-- Machine-learning classification
-- Feature engineering
-- Numerical and categorical preprocessing
-- scikit-learn pipeline development
-- Model serialization and loading
-- FastAPI REST API development
-- Pydantic request validation
-- Streamlit web application development
-- Frontend-to-backend API communication
-- HTTP POST requests and JSON responses
-- Local multi-service development
-- Python dependency management with `uv`
-- Git and GitHub version control
-- GitHub Actions CI/CD
-- Azure App Service deployment
-- OIDC-based GitHub-to-Azure authentication
-- Linux application startup configuration
-- Azure deployment-log troubleshooting
-- Python runtime and package compatibility management
-- HTTP 403, 405, 500, and 503 troubleshooting
-- Azure free-tier quota and cost management
-
----
-
 ## 🧩 Troubleshooting
 
 ### Streamlit cannot connect to FastAPI
@@ -712,37 +638,15 @@ Confirm that:
 
 A 405 response generally means Streamlit is calling the wrong path or HTTP method.
 
-Use:
-
-```python
-requests.post(
-    "https://fastapiinsurance-dkb9f7a2ehbzdxgr.uaenorth-01.azurewebsites.net/predict",
-    json=input_data,
-)
-```
-
-Do not send a request to `/docs` or the Swagger fragment.
-
 ### HTTP 422: Unprocessable Entity
 
 The submitted JSON fields or data types do not match the Pydantic schema.
 
-Check:
-
-- Required field names
-- Numeric data types
-- Boolean smoking status
-- Supported occupation values
 
 ### HTTP 500: Internal Server Error
 
 Inspect the FastAPI logs. Common causes include:
 
-- Missing model file
-- Incorrect model path
-- Missing input feature
-- Different feature names between training and inference
-- Incompatible scikit-learn version
 
 ### HTTP 403: Site Disabled
 
@@ -750,61 +654,14 @@ The Azure Web App may be stopped or the Free F1 quota may be exhausted.
 
 ### HTTP 503: Service Unavailable
 
-The application process may have failed to start. Check:
+The application process may have failed to start. 
 
-- Azure Log Stream
-- Startup command
-- Installed dependencies
-- Python runtime version
-- Model loading
 
 ---
 
 ## 💰 Azure Free-Tier Considerations
 
 The project uses separate Azure Web Apps for FastAPI and Streamlit.
-
-When using the Free F1 tier:
-
-- CPU, memory, and bandwidth quotas are limited
-- Applications may sleep during inactivity
-- Repeated deployments consume CPU quota
-- Multiple Web Apps can exhaust quota quickly if they share a plan
-- Historical cost and quota information may be delayed
-
-Disable obsolete GitHub Actions workflows and stop unused Web Apps to reduce unnecessary resource usage.
-
----
-
-## 🔮 Future Improvements
-
-- Add unit and integration tests
-- Add FastAPI endpoint tests
-- Add Streamlit smoke tests
-- Add a `/health` endpoint
-- Add structured application logging
-- Return model confidence and class probabilities
-- Add model version metadata
-- Add SHAP-based explanations
-- Add data-drift monitoring
-- Add model-performance monitoring
-- Add automated retraining
-- Add authentication and authorization
-- Store deployment secrets in Azure Key Vault
-- Add Docker and Docker Compose
-- Add PostgreSQL logging if persistent prediction storage is required
-- Add staging and production deployment environments
-- Add manual approval before production deployment
-
----
-
-## ⚠️ Disclaimer
-
-This repository is an educational and portfolio machine-learning project.
-
-The predicted insurance premium categories must not be used for real insurance pricing, underwriting, eligibility assessment, medical assessment, or financial decision-making without appropriate validation, regulatory review, security controls, fairness assessment, and qualified domain-expert oversight.
-
----
 
 ## 👤 Author
 
